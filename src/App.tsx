@@ -1,14 +1,30 @@
 import React, { useEffect, useRef } from "react";
 
+// Define the interface for trail points
+interface TrailPoint {
+  x: number;
+  y: number;
+  hue: number;
+  alpha: number;
+}
+
+// Define the type for trails (array of trail points)
+type Trail = TrailPoint[];
+
 const NeonLaserTrail = () => {
-  const canvasRef = useRef(null);
-  const trailsRef = useRef([]); // Store all trails
-  const drawingRef = useRef(false); // Whether the user is drawing
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const trailsRef = useRef<Trail[]>([]); // Store all trails
+  const drawingRef = useRef<boolean>(false); // Whether the user is drawing
+  const animationIdRef = useRef<number | null>(null); // Store animation frame ID
   let hue = 0; // Hue for smooth gradient transitions
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return; // Handle null canvas case
+    
     const ctx = canvas.getContext("2d");
+    if (!ctx) return; // Handle null context case
+    
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -48,19 +64,24 @@ const NeonLaserTrail = () => {
         trail.filter(point => point.alpha > 0)
       ).filter(trail => trail.length > 1);
 
-      requestAnimationFrame(render);
+      animationIdRef.current = requestAnimationFrame(render);
     };
 
-    requestAnimationFrame(render);
-    return () => cancelAnimationFrame(render);
+    animationIdRef.current = requestAnimationFrame(render);
+    
+    return () => {
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+    };
   }, []);
 
-  const getMousePos = (e) => ({
-    x: e.touches ? e.touches[0].clientX : e.clientX,
-    y: e.touches ? e.touches[0].clientY : e.clientY,
+  const getMousePos = (e: React.MouseEvent | React.TouchEvent): { x: number; y: number } => ({
+    x: 'touches' in e ? e.touches[0].clientX : e.clientX,
+    y: 'touches' in e ? e.touches[0].clientY : e.clientY,
   });
 
-  const startDrawing = (e) => {
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
     drawingRef.current = true;
     const { x, y } = getMousePos(e);
     hue = (hue + 10) % 360;
@@ -73,7 +94,7 @@ const NeonLaserTrail = () => {
     drawingRef.current = false;
   };
 
-  const addTrail = (e) => {
+  const addTrail = (e: React.MouseEvent | React.TouchEvent) => {
     if (!drawingRef.current) return;
     const { x, y } = getMousePos(e);
     hue = (hue + 1) % 360;
