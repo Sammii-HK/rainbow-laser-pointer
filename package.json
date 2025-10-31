@@ -1,7 +1,8 @@
 {
   "name": "rainbow-laser-pointer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "An interactive canvas-based laser pointer with smooth trail rendering and color transitions",
   "type": "module",
   "scripts": {
     "dev": "vite",
