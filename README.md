@@ -2,6 +2,8 @@
 
 An interactive canvas-based laser pointer application with smooth trail rendering and color transitions. Built with React, TypeScript, and HTML5 Canvas API.
 
+<img width="1708" height="980" alt="Screenshot 2025-10-31 at 14 13 32" src="https://github.com/user-attachments/assets/00d38c50-5a90-4d9c-b81c-5ff36452295f" />
+
 ## Technical Overview
 
 ### Rendering Architecture
